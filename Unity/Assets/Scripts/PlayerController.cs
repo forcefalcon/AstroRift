@@ -17,22 +17,28 @@ public class PlayerController : MonoBehaviour
 	public float MovementSensitivityY = 1F;
 	public float MovementSensitivityZ = 1F;
 	
-	public GUIText PositionText = null;
-	public GUIText RotationText = null;
+	private GUIText PositionText = null;
+	private GUIText RotationText = null;
+	
+	void OnEnable()
+	{
+		GameObject HUD = GameObject.FindGameObjectWithTag("HUD");
+		
+		if (HUD != null)
+		{
+			Transform trans = HUD.transform.FindChild("Position");
+			PositionText = trans.GetComponent<GUIText>();
+			
+			trans = HUD.transform.FindChild("Rotation");
+			RotationText = trans.GetComponent<GUIText>();
+		}
+	}
 	
 	void Update()
 	{
 		UpdateRotation();
 		UpdateMovement();
-		
-		if (PositionText != null)
-		{
-			PositionText.text = string.Format("Position: {0:F}, {1:F}, {2:F}", transform.position.x, transform.position.y, transform.position.z);
-		}
-		if (RotationText != null)
-		{
-			RotationText.text = string.Format("Rotation: {0:F}, {1:F}, {2:F}", transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
-		}
+		UpdateHUD();
 	}
 	
 	void UpdateRotation()
@@ -51,5 +57,17 @@ public class PlayerController : MonoBehaviour
 	void UpdateMovement()
 	{
 		transform.Translate(new Vector3(Input.GetAxis("Left X") * MovementSensitivityX * Time.deltaTime, -1.0f * Input.GetAxis("Triggers") * MovementSensitivityZ * Time.deltaTime, -1.0f * Input.GetAxis("Left Y") * MovementSensitivityY * Time.deltaTime), Space.Self);
+	}
+	
+	void UpdateHUD()
+	{
+		if (PositionText != null)
+		{
+			PositionText.text = string.Format("Position: {0:F}, {1:F}, {2:F}", transform.position.x, transform.position.y, transform.position.z);
+		}
+		if (RotationText != null)
+		{
+			RotationText.text = string.Format("Rotation: {0:F}, {1:F}, {2:F}", transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
+		}
 	}
 }
