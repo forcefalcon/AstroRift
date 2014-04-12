@@ -3,6 +3,9 @@
 
 #include <string>
 #include <map>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 using std::shared_ptr;
 
@@ -15,6 +18,45 @@ AsteroidDatabase::~AsteroidDatabase()
     db.clear();
 }
 
+int AsteroidDatabase::loadFromFile(const char *filename)
+{
+    std::ifstream f;
+    static float expected=637000.;
+    int current=0;
+
+    f.open(filename);
+
+    float dummy=0;
+    std::string line;
+
+    while(getline(f, line)){
+        current++;
+        if(current%100 == 0)
+            printf("\rLoading: %.1f%%", (current/expected)*100);
+
+        std::istringstream iss(line);
+        Asteroid *a = new Asteroid;
+
+        iss >> a->designation >> a->magnitude
+            >> a->slope >> a->epoch
+            >> a->epochAnomaly >> a->perihelion
+            >> a->ascendingNode >> a->inclination
+            >> a->eccentricity >> a->meanDailyMotion
+            >> a->semiMajorAxis >> dummy;
+
+        if(loadFilter.matches(a))
+            this->insert(a);
+        else
+            delete a;
+    }
+
+    printf("\rLoading finished\n");
+
+    f.close();
+
+    return db.size();
+}
+
 void AsteroidDatabase::insert(Asteroid *asteroid)
 {
     db[asteroid->designation] = shared_ptr<Asteroid>(asteroid);
@@ -25,4 +67,34 @@ void AsteroidDatabase::print(std::string id)
     if(db.find(id) != db.end()){
         db[id]->print();
     }
+}
+
+
+bool Filter::matches(const Asteroid *a)
+{
+    if(type == Filter::None){
+        return true;
+    }
+
+    if(type == Filter::Magnitude){
+        switch(cmp) {
+        case Filter::EQUAL:
+            return (a->magnitude <= value.magnitude*(equalityMarginUp) && a->magnitude >= value.magnitude*equalityMarginLow);
+
+        case Filter::GREATER:
+            return a->magnitude >= value.magnitude;
+
+        case Filter::LESSER:
+            return a->magnitude <= value.magnitude;
+
+        default:
+            return true;
+        }
+    }
+
+    if(type == Filter::YearOfDiscovery){
+        return true;
+    }
+
+    return true;
 }
