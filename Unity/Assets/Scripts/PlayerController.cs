@@ -17,10 +17,22 @@ public class PlayerController : MonoBehaviour
 	public float MovementSensitivityY = 1F;
 	public float MovementSensitivityZ = 1F;
 	
+	public GUIText PositionText = null;
+	public GUIText RotationText = null;
+	
 	void Update()
 	{
 		UpdateRotation();
 		UpdateMovement();
+		
+		if (PositionText != null)
+		{
+			PositionText.text = string.Format("Position: {0:F}, {1:F}, {2:F}", transform.position.x, transform.position.y, transform.position.z);
+		}
+		if (RotationText != null)
+		{
+			RotationText.text = string.Format("Rotation: {0:F}, {1:F}, {2:F}", transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
+		}
 	}
 	
 	void UpdateRotation()
