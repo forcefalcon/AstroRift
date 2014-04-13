@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 class OrbitWrapper {
-
+	public static int ASTEROID_COUNT=1000;
 	
 	// Other platforms load plugins dynamically, so pass the name
 	// of the plugin's dynamic library.
@@ -98,7 +98,7 @@ class OrbitWrapper {
 		if (sInitialPosition == null) 
 		{
 			sInitialPosition = new List<Vector3>();
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < ASTEROID_COUNT; i++)
 			{
 				sInitialPosition.Add(
 					new Vector3(0, 0, Random.value * 350475390/ASTRONOMICAL_UNITS + 327936637/ASTRONOMICAL_UNITS));
@@ -106,7 +106,7 @@ class OrbitWrapper {
 		}
 
 		List<Vector3> coordinates = new List<Vector3>();
-		for (int i = 0; i < 5; i++) 
+		for (int i = 0; i < sInitialPosition.Count; i++) 
 		{
 			Quaternion quaternion = Quaternion.identity;
 			quaternion = quaternion * Quaternion.AngleAxis (timeStamp, Vector3.up);

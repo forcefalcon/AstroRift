@@ -8,7 +8,6 @@ abstract public class SpaceObject: MonoBehaviour {
 	public static float DISTANCE_UNIT = 0.25f;
 	protected float mDistance;
 	public double previousTime = 0;
-	private Vector3 mInitialPosition;
 
 	protected virtual void Awake () {
 		transform.localScale =
