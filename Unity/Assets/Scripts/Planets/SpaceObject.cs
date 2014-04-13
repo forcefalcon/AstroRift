@@ -5,7 +5,7 @@ abstract public class SpaceObject: MonoBehaviour {
 	//private static float SIZE_UNIT = 149597887;
 	private static float ASTRONOMICAL_UNITS = 149597887;
 	private static float SIZE_UNIT = ASTRONOMICAL_UNITS;
-	private static float DISTANCE_UNIT = ASTRONOMICAL_UNITS/10;
+	public static float DISTANCE_UNIT = ASTRONOMICAL_UNITS/10;
 	protected float mDistance;
 	public double previousTime;
 	private Vector3 mInitialPosition;
