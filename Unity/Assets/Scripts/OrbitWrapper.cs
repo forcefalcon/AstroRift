@@ -82,28 +82,35 @@ class OrbitWrapper {
 		return planets;
 	}
 	static List<Vector3> sPlanetPosition = null;
+	static List<float> sPlanetSpeeds = null;
+	
 	public static List<Vector3> GetPlanetsOrbit2 (int dayStamp) 
 	{
 		if (sPlanetPosition == null) 
 		{
 			sPlanetPosition = new List<Vector3>();
+			sPlanetSpeeds = new List<float>();
+			
 			for (int i = 0; i < 8; i++)
 			{
 				sPlanetPosition.Add(
 					GetDisplacement(
 					(int)(Random.value * 3600),
-					new Vector3(0, GetBoxMuller(0, 0.025f), GetDistanceKm(i)), Vector3.up)); 
+					new Vector3(0, GetBoxMuller(0, 0.025f), GetDistanceKm(i)), Vector3.up, 1.0f));
+					
+				sPlanetSpeeds.Add( 1.0f + i );
 			}
 		}
 		List<Vector3> coordinates = new List<Vector3>();
 		for (int i = 0; i < sPlanetPosition.Count; i++) 
 		{
-			coordinates.Add (GetDisplacement(dayStamp, sPlanetPosition[i], Vector3.up));
+			coordinates.Add (GetDisplacement(dayStamp, sPlanetPosition[i], Vector3.up, sPlanetSpeeds[i]));
 		}
 		return coordinates;
 	}
 	static List<Vector3> sInitialPosition = null;
 	static List<Vector3> sAxisOfRotation = null;
+	static List<float> sAsteroidSpeeds = null; 
 
 	public static List<Vector3> GetAsteroidOrbit2 (int dayStamp) 
 	{
@@ -111,22 +118,27 @@ class OrbitWrapper {
 		{
 			sInitialPosition = new List<Vector3>();
 			sAxisOfRotation = new List<Vector3>();
+			sAsteroidSpeeds = new List<float>();
+			
 			for (int i = 0; i < ASTEROID_COUNT; i++)
 			{
 				Vector3 vector = new Vector3(0, 
 				            GetBoxMuller(0, 3f)*0.05f,
 				            GetBoxMuller(503174332/ASTRONOMICAL_UNITS, 0.5f)); 
-				Vector3 perpToSun = Vector3.right;
+				Vector3 perpToSun = Vector3.left;
 				sAxisOfRotation.Add(
 					Vector3.Cross(
 						perpToSun,
 						vector));
+						
+				sAsteroidSpeeds.Add( Random.Range(0.5f, 10.0f) );
 
 				sInitialPosition.Add(
 					GetDisplacement(
 					(int)(Random.value * 3600),
 					vector, 
-					Vector3.up)); 
+					sAxisOfRotation[i],
+					sAsteroidSpeeds[i])); 
 				            	//Random.value * 350475390/ASTRONOMICAL_UNITS + 327936637/ASTRONOMICAL_UNITS)));
 			}
 		}
@@ -134,14 +146,14 @@ class OrbitWrapper {
 		List<Vector3> coordinates = new List<Vector3>();
 		for (int i = 0; i < sInitialPosition.Count; i++) 
 		{
-			coordinates.Add (GetDisplacement(dayStamp, sInitialPosition[i], sAxisOfRotation[i]));
+			coordinates.Add (GetDisplacement(dayStamp, sInitialPosition[i], sAxisOfRotation[i], sAsteroidSpeeds[i]));
 		}
 		return coordinates;
 	}
-	private static Vector3 GetDisplacement(int day, Vector3 initialPosition, Vector3 axisRotation)
+	private static Vector3 GetDisplacement(int day, Vector3 initialPosition, Vector3 axisRotation, float speedMod)
 	{
 		Quaternion quaternion = Quaternion.identity;
-		quaternion = quaternion * Quaternion.AngleAxis (day, axisRotation);
+		quaternion = quaternion * Quaternion.AngleAxis (day * speedMod, axisRotation);
 		//quaternion = quaternion * Quaternion.AngleAxis (day, Vector3.Cross(initialPosition, Vector3.up));
 		//Quaternion left = Quaternion.identity;
 		//left = left * Quaternion.AngleAxis (5, Vector3.left);
