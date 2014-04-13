@@ -16,14 +16,16 @@ static const char* jsonFilename = "mpcorb.dat.json";
 int main()
 {
     AsteroidDatabase db;
-    Filter filter{Filter::Magnitude, Filter::LESSER, 10};
+    Filter filter{Filter::YearOfDiscovery, Filter::EQUAL, 2008};
 
-//    db.loadPolicy(filter);
+    db.loadPolicy(filter);
     db.loadFromJSON(jsonFilename);
-    db.filterAndErase(filter);
+
+//    db.filterAndErase(filter);
 
     cout << "Created "<< db.size() << " asteroids." << endl;
 
+    db.print();
 
     return 0;
 }
