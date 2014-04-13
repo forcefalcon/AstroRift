@@ -63,7 +63,7 @@ int AsteroidDatabase::loadFromFile(const char *filename)
 int AsteroidDatabase::loadFromJSON(const char *filename)
 {
     std::ifstream f;
-    picojson::value values;
+    picojson::value v;
     f.open(filename);
     if(!f.is_open()){
         std::cerr << "Could not open file: " << filename << std::endl;
@@ -71,10 +71,27 @@ int AsteroidDatabase::loadFromJSON(const char *filename)
     }
 
     std::cout << "Parsing JSON file " << std::endl;
-    picojson::parse(values, f);
-    std::cout << "Done..." << std::endl;
-
+    std::string jsonErr = picojson::parse(v, f);
+    std::cout << "Done... " << std::endl;
     f.close();
+
+    if (v.is<picojson::array>()) {
+
+        const picojson::array& a = v.get<picojson::array>();
+        std::cout << "Found " << a.size() << " items." << std::endl;
+
+        for(auto item: a){
+            Asteroid *a = new Asteroid(item);
+            if(loadFilter.matches(a))
+                this->insert(a);
+            else
+                delete a;
+        }
+
+    }
+
+
+    return 0;
 }
 
 void AsteroidDatabase::insert(Asteroid *asteroid)

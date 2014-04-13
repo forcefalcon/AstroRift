@@ -2,6 +2,7 @@
 #define ASTEROID_H
 
 #include <string>
+#include <picojson.h>
 
 class Asteroid
 {
@@ -10,35 +11,27 @@ class Asteroid
 
 public:
     Asteroid();
+    Asteroid(picojson::value const & jsonItem);
     void print();
 
     std::string designation;
     std::string epoch;
+    std::string name;
+    std::string reference;
 
-    float magnitude;
-    float slope;
-    float epochAnomaly;
-    float perihelion;
-    float ascendingNode;
-    float inclination;
-    float eccentricity;
-    float meanDailyMotion;
-    float semiMajorAxis;
+    double magnitude;
+    double slope;
+    double epochAnomaly;
+    double perihelion;
+    double ascendingNode;
+    double inclination;
+    double eccentricity;
+    double meanDailyMotion;
+    double semiMajorAxis;
 
-    void computeDate(){
-//        1996 Oct. 1    = J96A1
-//        2001 Oct. 22   = K01AM
-        if(epoch.size() != 5)
-            return;
+    double numObservations;
 
-        int YY = atoi(epoch.substr(1, 2).c_str());
-        if(YY > 20){
-            yearOfDiscovery = 1900+YY;
-        }else{
-            yearOfDiscovery = 2000+YY;
-        }
-    }
-
+    void computeDate();
     int yearOfDiscovery;
 };
 
