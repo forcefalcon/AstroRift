@@ -92,33 +92,41 @@ class OrbitWrapper {
 				sPlanetPosition.Add(
 					GetDisplacement(
 					(int)(Random.value * 3600),
-					new Vector3(0, GetBoxMuller(0, 0.025f), GetDistanceKm(i)))); 
+					new Vector3(0, GetBoxMuller(0, 0.025f), GetDistanceKm(i)), Vector3.up)); 
 			}
 		}
 		List<Vector3> coordinates = new List<Vector3>();
 		for (int i = 0; i < sPlanetPosition.Count; i++) 
 		{
-			coordinates.Add (GetDisplacement(dayStamp, sPlanetPosition[i]));
+			coordinates.Add (GetDisplacement(dayStamp, sPlanetPosition[i], Vector3.up));
 		}
 		return coordinates;
 	}
 	static List<Vector3> sInitialPosition = null;
-	static List<int> sInitialShift = null;
+	static List<Vector3> sAxisOfRotation = null;
+
 	public static List<Vector3> GetAsteroidOrbit2 (int dayStamp) 
 	{
 		if (sInitialPosition == null) 
 		{
 			sInitialPosition = new List<Vector3>();
-			sInitialShift = new List<int>();
+			sAxisOfRotation = new List<Vector3>();
 			for (int i = 0; i < ASTEROID_COUNT; i++)
 			{
+				Vector3 vector = new Vector3(0, 
+				            GetBoxMuller(0, 3f)*0.05f,
+				            GetBoxMuller(503174332/ASTRONOMICAL_UNITS, 0.5f)); 
+				Vector3 perpToSun = Vector3.right;
+				sAxisOfRotation.Add(
+					Vector3.Cross(
+						perpToSun,
+						vector));
 
 				sInitialPosition.Add(
 					GetDisplacement(
 					(int)(Random.value * 3600),
-					new Vector3(0, 
-				            GetBoxMuller(0, 3f)*0.05f,
-				            GetBoxMuller(503174332/ASTRONOMICAL_UNITS, 0.5f)))); 
+					vector, 
+					Vector3.up)); 
 				            	//Random.value * 350475390/ASTRONOMICAL_UNITS + 327936637/ASTRONOMICAL_UNITS)));
 			}
 		}
@@ -126,14 +134,14 @@ class OrbitWrapper {
 		List<Vector3> coordinates = new List<Vector3>();
 		for (int i = 0; i < sInitialPosition.Count; i++) 
 		{
-			coordinates.Add (GetDisplacement(dayStamp, sInitialPosition[i]));
+			coordinates.Add (GetDisplacement(dayStamp, sInitialPosition[i], sAxisOfRotation[i]));
 		}
 		return coordinates;
 	}
-	private static Vector3 GetDisplacement(int day, Vector3 initialPosition)
+	private static Vector3 GetDisplacement(int day, Vector3 initialPosition, Vector3 axisRotation)
 	{
 		Quaternion quaternion = Quaternion.identity;
-		quaternion = quaternion * Quaternion.AngleAxis (day, Vector3.up);
+		quaternion = quaternion * Quaternion.AngleAxis (day, axisRotation);
 		//quaternion = quaternion * Quaternion.AngleAxis (day, Vector3.Cross(initialPosition, Vector3.up));
 		//Quaternion left = Quaternion.identity;
 		//left = left * Quaternion.AngleAxis (5, Vector3.left);

@@ -5,7 +5,7 @@ public class Asteroid : SpaceObject {
 
 	override public double GetDiameterKm()
 	{
-		return 7;
+		return 5;
 	}
 	
 	override public double GetDistanceKm()
