@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "picojson.h"
+
 using std::shared_ptr;
 
 AsteroidDatabase::AsteroidDatabase()
@@ -43,6 +45,7 @@ int AsteroidDatabase::loadFromFile(const char *filename)
             >> a->ascendingNode >> a->inclination
             >> a->eccentricity >> a->meanDailyMotion
             >> a->semiMajorAxis >> dummy;
+        a->computeDate();
 
         if(loadFilter.matches(a))
             this->insert(a);
@@ -55,6 +58,45 @@ int AsteroidDatabase::loadFromFile(const char *filename)
     f.close();
 
     return db.size();
+}
+
+int AsteroidDatabase::loadFromJSON(const char *filename)
+{
+    std::ifstream f;
+    picojson::value v;
+    f.open(filename);
+    if(!f.is_open()){
+        std::cerr << "Could not open file: " << filename << std::endl;
+        return -1;
+    }
+
+    std::string jsonErr = picojson::parse(v, f);
+    std::cout << std::endl << "Done... " << std::endl;
+    f.close();
+
+    if (v.is<picojson::array>()) {
+
+        const picojson::array& a = v.get<picojson::array>();
+        std::cout << "Found " << a.size() << " items." << std::endl;
+
+        double total = a.size()/100.;
+        unsigned long treated = 0;
+        for(auto item: a){
+            if(treated++%100 == 0){
+                printf("\rCreating database : %.2f%%", treated/total);
+            }
+            Asteroid *a = new Asteroid(item);
+
+            if(loadFilter.matches(a))
+                this->insert(a);
+            else
+                delete a;
+        }
+        std::cout << std::endl << "Done... " << std::endl;
+
+    }
+
+    return 0;
 }
 
 void AsteroidDatabase::insert(Asteroid *asteroid)
@@ -103,7 +145,6 @@ bool Filter::matches(const Asteroid *a)
     }
 
     if(type == Filter::YearOfDiscovery){
-        a->computeDate();
         switch (cmp) {
         case Filter::EQUAL:
             return a->yearOfDiscovery == value.year;

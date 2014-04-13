@@ -9,7 +9,8 @@ SOURCES += main.cpp \
 
 HEADERS += \
     asteroid.h \
-    asteroiddatabase.h
+    asteroiddatabase.h \
+    picojson.h
 
 QMAKE_CXXFLAGS += -std=c++11
 
