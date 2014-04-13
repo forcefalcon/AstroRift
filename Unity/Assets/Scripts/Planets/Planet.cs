@@ -5,8 +5,7 @@ public class Planet : SpaceObject {
 	protected override void Awake()
 	{
 		base.Awake ();
-		SetDistance (GetDistanceKm ());
-		UpdatePosition(Random.value * 3600);
+		//UpdatePosition(Random.value * 3600);
 	}
 	
 	override public double GetDiameterKm()
@@ -38,21 +37,21 @@ public class Planet : SpaceObject {
 		switch (this.gameObject.name) 
 		{
 		case  "Mercury":
-			return 57909176;
+			return 57909176/ASTRONOMICAL_UNITS;
 		case "Venus":
-			return 108208930;
+			return 108208930/ASTRONOMICAL_UNITS;
 		case  "Earth":
-			return 149597887.5;
+			return 149597887.5/ASTRONOMICAL_UNITS;
 		case  "Mars":
-			return 227936637;
+			return 227936637/ASTRONOMICAL_UNITS;
 		case  "Jupiter":
-			return 778412027;
+			return 778412027/ASTRONOMICAL_UNITS;
 		case  "Saturn":
-			return 1421179772;
+			return 1421179772/ASTRONOMICAL_UNITS;
 		case  "Uranus":
-			return 2876679082;
+			return 2876679082/ASTRONOMICAL_UNITS;
 		case  "Neptune":
-			return 4503443661;
+			return 4503443661/ASTRONOMICAL_UNITS;
 		}
 		return 0;
 	}
