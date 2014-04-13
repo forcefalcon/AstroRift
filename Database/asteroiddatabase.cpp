@@ -62,6 +62,16 @@ void AsteroidDatabase::insert(Asteroid *asteroid)
     db[asteroid->designation] = shared_ptr<Asteroid>(asteroid);
 }
 
+int AsteroidDatabase::filterAndErase(Filter filter)
+{
+    for(auto item: db){
+        if(!filter.matches(item.second)){
+            db.erase(item.first);
+        }
+    }
+    return db.size();
+}
+
 void AsteroidDatabase::print(std::string id)
 {
     if(db.find(id) != db.end()){
@@ -93,7 +103,20 @@ bool Filter::matches(const Asteroid *a)
     }
 
     if(type == Filter::YearOfDiscovery){
-        return true;
+        a->computeDate();
+        switch (cmp) {
+        case Filter::EQUAL:
+            return a->yearOfDiscovery == value.year;
+
+        case Filter::GREATER:
+            return a->yearOfDiscovery >= value.year;
+
+        case Filter::LESSER:
+            return a->yearOfDiscovery <= value.year;
+
+        default:
+            return true;
+        }
     }
 
     return true;

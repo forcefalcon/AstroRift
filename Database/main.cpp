@@ -15,12 +15,13 @@ static const char* filename = "mpcorb.dat";
 int main()
 {
     AsteroidDatabase db;
-    db.loadPolicy( {Filter::Magnitude, Filter::LESSER, 20.} );
-    db.loadFromFile(filename);
+    Filter filter{Filter::Magnitude, Filter::LESSER, 10};
 
+
+    db.loadPolicy(filter);
+    db.loadFromFile(filename);
     cout << "Created "<< db.size() << " asteroids." << endl;
 
-    db.print("b1319");
 
     return 0;
 }

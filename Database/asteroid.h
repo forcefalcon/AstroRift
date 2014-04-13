@@ -24,6 +24,19 @@ public:
     float eccentricity;
     float meanDailyMotion;
     float semiMajorAxis;
+
+    void computeDate(){
+//        1996 Oct. 1    = J96A1
+//        2001 Oct. 22   = K01AM
+        int YY = atoi(epoch.substr(1, 2).c_str());
+        if(YY > 20){
+            yearOfDiscovery = 1900+YY;
+        }else{
+            yearOfDiscovery = 2000+YY;
+        }
+    }
+
+    int yearOfDiscovery;
 };
 
 #endif // ASTEROID_H

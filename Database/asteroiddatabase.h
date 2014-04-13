@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <iostream>
 
 #include "asteroid.h"
 
@@ -22,11 +23,24 @@ struct Filter {
         GREATER
     };
 
-    Filter(): type(Type::None) {}
-    Filter(Filter::Type _type, Filter::Compare _cmp, float _y)
-        :type(_type), cmp(_cmp), value{_y} {}
+    Filter(): type(Type::None), cmp(Compare::EQUAL) {}
+    template<typename T>
+        Filter(Filter::Type _type, Filter::Compare _cmp, T _y)
+        :type(_type), cmp(_cmp)
+        {
+            switch(type){
+            case Type::Magnitude:
+                value.magnitude  = float(_y);
+                break;
+            case Type::YearOfDiscovery:
+                value.year = int(_y);
+                break;
+            }
+
+//            std::cout << type << " " << cmp << " - " << value.magnitude << std::endl;
+        }
     bool matches(Asteroid const *a);
-//    bool matches(std::shared_ptr<Asteroid> const a);
+    bool matches(std::shared_ptr<Asteroid> const &a) { return matches(a.get()); }
 
     Type type;
     Compare cmp;
@@ -60,7 +74,7 @@ public:
     void insert(Asteroid *asteroid);
     std::shared_ptr<Asteroid *> getAsteroid(std::string id);
 
-    int filterInplace(Filter filter) {}
+    int filterAndErase(Filter filter);
 
     void print(std::string id);
 
