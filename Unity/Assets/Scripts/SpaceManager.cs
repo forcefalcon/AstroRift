@@ -16,7 +16,7 @@ public class SpaceManager : MonoBehaviour
 
 	public void buildAsteoridBelt() 
 	{
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 5; i++) {
 			GameObject asteroidClone = 
 				(GameObject)Instantiate(AsteroidPrefab);
 			
@@ -24,16 +24,11 @@ public class SpaceManager : MonoBehaviour
 			Asteroid asteroid = asteroidClone.GetComponent<Asteroid>();
 			asteroid.SetDistance(Random.value * 350475390 + 327936637);
 			spaceObjects.Add(asteroid);
+			asteroid.UpdatePosition(Random.value * 3600);			                      
 		}
+
 	}
-	void Update()
-	{
-		foreach (Asteroid asteroid in spaceObjects)
-		{
-			// TODO should actually call the dll here.
-			asteroid.UpdatePosition();
-		}
-	}
+
 	
 
 

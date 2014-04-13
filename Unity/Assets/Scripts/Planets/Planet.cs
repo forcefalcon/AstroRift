@@ -5,6 +5,8 @@ public class Planet : SpaceObject {
 	protected override void Awake()
 	{
 		base.Awake ();
+		SetDistance (GetDistanceKm ());
+		UpdatePosition(Random.value * 3600);
 	}
 	
 	override public double GetDiameterKm()
