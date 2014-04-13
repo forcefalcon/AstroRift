@@ -50,6 +50,7 @@
     #define SNPRINTF snprintf
 #endif
 
+
 namespace picojson {
   
   enum {
@@ -64,6 +65,8 @@ namespace picojson {
   enum {
     INDENT_WIDTH = 2
   };
+
+  static unsigned long long cnt=0;
 
   struct null {};
   
@@ -643,8 +646,14 @@ namespace picojson {
   }
   
   template <typename Context, typename Iter> inline bool _parse(Context& ctx, input<Iter>& in) {
+    picojson::cnt++;
+    if(picojson::cnt%1000 == 0){
+        printf("\rLoading JSON file: %.2f%%", picojson::cnt/147040.);
+    }
+
     in.skip_ws();
     int ch = in.getc();
+
     switch (ch) {
 #define IS(ch, text, op) case ch: \
       if (in.match(text) && op) { \

@@ -70,9 +70,8 @@ int AsteroidDatabase::loadFromJSON(const char *filename)
         return -1;
     }
 
-    std::cout << "Parsing JSON file " << std::endl;
     std::string jsonErr = picojson::parse(v, f);
-    std::cout << "Done... " << std::endl;
+    std::cout << std::endl << "Done... " << std::endl;
     f.close();
 
     if (v.is<picojson::array>()) {
@@ -80,16 +79,22 @@ int AsteroidDatabase::loadFromJSON(const char *filename)
         const picojson::array& a = v.get<picojson::array>();
         std::cout << "Found " << a.size() << " items." << std::endl;
 
+        double total = a.size()/100.;
+        unsigned long treated = 0;
         for(auto item: a){
+            if(treated++%100 == 0){
+                printf("\rCreating database : %.2f%%", treated/total);
+            }
             Asteroid *a = new Asteroid(item);
+
             if(loadFilter.matches(a))
                 this->insert(a);
             else
                 delete a;
         }
+        std::cout << std::endl << "Done... " << std::endl;
 
     }
-
 
     return 0;
 }

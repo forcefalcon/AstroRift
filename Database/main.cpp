@@ -18,9 +18,10 @@ int main()
     AsteroidDatabase db;
     Filter filter{Filter::Magnitude, Filter::LESSER, 10};
 
-    db.loadFromJSON(jsonFilename);
 //    db.loadPolicy(filter);
-//    db.loadFromFile(filename);
+    db.loadFromJSON(jsonFilename);
+    db.filterAndErase(filter);
+
     cout << "Created "<< db.size() << " asteroids." << endl;
 
 
