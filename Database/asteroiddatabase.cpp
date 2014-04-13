@@ -11,6 +11,9 @@
 
 using std::shared_ptr;
 
+const float Filter::equalityMarginUp=1.05;
+const float Filter::equalityMarginLow=0.95;
+
 AsteroidDatabase::AsteroidDatabase()
 {
 }

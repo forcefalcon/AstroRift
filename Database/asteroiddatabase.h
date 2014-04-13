@@ -53,8 +53,8 @@ struct Filter {
      * @brief equalityMargin*
      *  Used to give some tolerance while comparing floats
      */
-    static constexpr float equalityMarginUp=1.05;
-    static constexpr float equalityMarginLow=0.95;
+    static const float equalityMarginUp;
+    static const float equalityMarginLow;
 };
 
 /**

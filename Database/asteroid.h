@@ -2,7 +2,8 @@
 #define ASTEROID_H
 
 #include <string>
-#include <picojson.h>
+#include "picojson.h"
+#include "orbitsData.h"
 
 class Asteroid
 {
