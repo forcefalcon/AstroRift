@@ -3,7 +3,6 @@
 
 #include <string>
 #include <map>
-#include <memory>
 #include <iostream>
 
 #include "asteroid.h"
@@ -40,7 +39,7 @@ struct Filter {
 
 
     bool matches(Asteroid const *a);
-    bool matches(std::shared_ptr<Asteroid> const &a) { return matches(a.get()); }
+
 
     Type type;
     Compare cmp;
@@ -63,7 +62,7 @@ struct Filter {
  */
 class AsteroidDatabase
 {
-    typedef std::map<std::string, std::shared_ptr<Asteroid>>::iterator iterator;
+    typedef std::map<std::string, Asteroid*>::iterator iterator;
 public:
     AsteroidDatabase();
     ~AsteroidDatabase();
@@ -74,9 +73,9 @@ public:
 
 
     void insert(Asteroid *asteroid);
-    std::shared_ptr<Asteroid> getAsteroidByDesignation(std::string id);
-    std::shared_ptr<Asteroid> getAsteroidByName(std::string name);
-    std::vector<std::shared_ptr<Asteroid>> find(Filter filter);
+    Asteroid* getAsteroidByDesignation(std::string id);
+    Asteroid* getAsteroidByName(std::string name);
+    std::vector<Asteroid*> find(Filter filter);
 
     int filterAndErase(Filter filter);
     void print(std::string id);
@@ -87,7 +86,7 @@ public:
     iterator end() { return db.end(); }
 
 private:
-    std::map<std::string, std::shared_ptr<Asteroid>> db;
+    std::map<std::string, Asteroid*> db;
     Filter loadFilter;
 };
 

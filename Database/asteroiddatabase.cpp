@@ -9,7 +9,6 @@
 
 #include "picojson.h"
 
-using std::shared_ptr;
 
 const float Filter::equalityMarginUp=1.05;
 const float Filter::equalityMarginLow=0.95;
@@ -20,6 +19,11 @@ AsteroidDatabase::AsteroidDatabase()
 
 AsteroidDatabase::~AsteroidDatabase()
 {
+    for(auto item = db.begin(); item != db.end(); item++){
+        if(item->second){
+            delete item->second;
+        }
+    }
     db.clear();
 }
 
@@ -104,10 +108,10 @@ int AsteroidDatabase::loadFromJSON(const char *filename)
 
 void AsteroidDatabase::insert(Asteroid *asteroid)
 {
-    db[asteroid->designation] = shared_ptr<Asteroid>(asteroid);
+    db[asteroid->designation] = asteroid;
 }
 
-std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByDesignation(std::string id)
+Asteroid* AsteroidDatabase::getAsteroidByDesignation(std::string id)
 {
    if(db.find(id) != db.end()){
         return db[id];
@@ -120,7 +124,7 @@ std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByDesignation(std::string
  * @param name
  *  Loops over whole map, maybe create a second one?
  */
-std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByName(std::string name)
+Asteroid* AsteroidDatabase::getAsteroidByName(std::string name)
 {
 	for(auto item = db.begin(); item != db.end(); item++){
 		if((*item).second->name  == name){
@@ -130,9 +134,9 @@ std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByName(std::string name)
     return NULL;
 }
 
-std::vector<std::shared_ptr<Asteroid>> AsteroidDatabase::find(Filter filter)
+std::vector<Asteroid *> AsteroidDatabase::find(Filter filter)
 {
-    std::vector<std::shared_ptr<Asteroid>> list;
+    std::vector<Asteroid*> list;
     for(auto item = db.begin(); item != db.end(); item++){
        if(!filter.matches((*item).second)){
            list.push_back((*item).second);
