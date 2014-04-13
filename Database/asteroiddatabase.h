@@ -15,7 +15,8 @@ struct Filter {
     enum Type {
         None,
         Magnitude,
-        YearOfDiscovery
+        YearOfDiscovery,
+        Name,
     };
     enum Compare {
         EQUAL,
@@ -24,21 +25,20 @@ struct Filter {
     };
 
     Filter(): type(Type::None), cmp(Compare::EQUAL) {}
-    template<typename T>
-        Filter(Filter::Type _type, Filter::Compare _cmp, T _y)
-        :type(_type), cmp(_cmp)
-        {
-            switch(type){
-            case Type::Magnitude:
-                value.magnitude  = float(_y);
-                break;
-            case Type::YearOfDiscovery:
-                value.year = int(_y);
-                break;
-            }
 
-//            std::cout << type << " " << cmp << " - " << value.magnitude << std::endl;
+    Filter(Filter::Type _type, Filter::Compare _cmp, char const * _y):type(_type), cmp(_cmp) {
+        if(_type == Type::Name){
+            memcpy(value.name, _y, std::max((int)strlen(_y), 32));
         }
+    }
+    Filter(Filter::Type _type, Filter::Compare _cmp, float _y):type(_type), cmp(_cmp) {
+        value.magnitude = _y;
+    }
+    Filter(Filter::Type _type, Filter::Compare _cmp, int _y):type(_type), cmp(_cmp) {
+        value.year = _y;
+    }
+
+
     bool matches(Asteroid const *a);
     bool matches(std::shared_ptr<Asteroid> const &a) { return matches(a.get()); }
 
@@ -47,6 +47,7 @@ struct Filter {
     union {
         int year;
         float magnitude;
+        char name[32];
     } value;
 
     /**
@@ -73,11 +74,13 @@ public:
 
 
     void insert(Asteroid *asteroid);
-    std::shared_ptr<Asteroid *> getAsteroid(std::string id);
+    std::shared_ptr<Asteroid> getAsteroidByDesignation(std::string id);
+    std::shared_ptr<Asteroid> getAsteroidByName(std::string name);
+    std::vector<std::shared_ptr<Asteroid>> find(Filter filter);
 
     int filterAndErase(Filter filter);
-
     void print(std::string id);
+    void print();
 
     int size() { return db.size(); }
     iterator begin() {return db.begin(); }

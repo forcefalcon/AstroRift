@@ -107,6 +107,40 @@ void AsteroidDatabase::insert(Asteroid *asteroid)
     db[asteroid->designation] = shared_ptr<Asteroid>(asteroid);
 }
 
+std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByDesignation(std::string id)
+{
+   if(db.find(id) != db.end()){
+        return db[id];
+   }
+   return NULL;
+}
+
+/**
+ * @brief AsteroidDatabase::getAsteroidByName
+ * @param name
+ *  Loops over whole map, maybe create a second one?
+ */
+std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByName(std::string name)
+{
+    for(auto item: db){
+        if(item.name  == name){
+            return item.second;
+        }
+    }
+    return NULL;
+}
+
+std::vector<std::shared_ptr<Asteroid>> AsteroidDatabase::find(Filter filter)
+{
+    std::vector<std::shared_ptr<Asteroid>> list;
+    for(auto item: db){
+       if(!filter.matches(item.second)){
+           list.push_back(item.second);
+       }
+    }
+    return list;
+}
+
 int AsteroidDatabase::filterAndErase(Filter filter)
 {
     for(auto item: db){
@@ -117,10 +151,19 @@ int AsteroidDatabase::filterAndErase(Filter filter)
     return db.size();
 }
 
+
+
 void AsteroidDatabase::print(std::string id)
 {
     if(db.find(id) != db.end()){
         db[id]->print();
+    }
+}
+
+void AsteroidDatabase::print()
+{
+    for(auto item: db){
+        item.second->print();
     }
 }
 

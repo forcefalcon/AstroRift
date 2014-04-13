@@ -85,7 +85,7 @@ Asteroid::Asteroid(const picojson::value &jsonItem)
 
 void Asteroid::print()
 {
-    std::cout << "Asteroid: " << designation << std::endl;
+    std::cout << "Asteroid: " << name << ", discovered in " << yearOfDiscovery << std::endl;
 }
 
 void Asteroid::computeDate()
