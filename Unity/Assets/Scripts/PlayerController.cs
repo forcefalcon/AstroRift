@@ -43,20 +43,21 @@ public class PlayerController : MonoBehaviour
 	
 	void UpdateRotation()
 	{
-		Quaternion rotX = Quaternion.AngleAxis(Input.GetAxis("Right X") * RotationSensitivityX * Time.deltaTime, Vector3.up);
-		Quaternion rotY = Quaternion.AngleAxis(Input.GetAxis("Right Y") * RotationSensitivityY * Time.deltaTime, Vector3.left);
-		
-		float angZ = Input.GetButton("Left Bumper") ? RotationSensitivityZ : 0.0f;
-		angZ -= Input.GetButton("Right Bumper") ? RotationSensitivityZ : 0.0f;
-		angZ *= Time.deltaTime;
-		Quaternion rotZ = Quaternion.AngleAxis(angZ, Vector3.forward);
+		Quaternion rotX = Quaternion.AngleAxis(Input.GetAxis("LookX") * RotationSensitivityX * Time.deltaTime, Vector3.up);
+		Quaternion rotY = Quaternion.AngleAxis(Input.GetAxis("LookY") * RotationSensitivityY * Time.deltaTime, Vector3.left);
+		Quaternion rotZ = Quaternion.AngleAxis(-1.0f * Input.GetAxis("LookRoll") * RotationSensitivityZ * Time.deltaTime, Vector3.forward);
 		
 		transform.localRotation = transform.localRotation * rotX * rotY * rotZ;
 	}
 	
 	void UpdateMovement()
 	{
-		transform.Translate(new Vector3(Input.GetAxis("Left X") * MovementSensitivityX * Time.deltaTime, -1.0f * Input.GetAxis("Triggers") * MovementSensitivityZ * Time.deltaTime, -1.0f * Input.GetAxis("Left Y") * MovementSensitivityY * Time.deltaTime), Space.Self);
+		transform.Translate(
+			new Vector3(
+				Input.GetAxis("MoveX") * MovementSensitivityX * Time.deltaTime, 
+				Input.GetAxis("MoveZ") * MovementSensitivityZ * Time.deltaTime, 
+				Input.GetAxis("MoveY") * MovementSensitivityY * Time.deltaTime), 
+			Space.Self);
 	}
 	
 	void UpdateHUD()
