@@ -84,11 +84,11 @@ int AsteroidDatabase::loadFromJSON(const char *filename)
 
         double total = a.size()/100.;
         unsigned long treated = 0;
-        for(auto item: a){
+        for(auto item = a.begin(); item != a.end(); item++){
             if(treated++%100 == 0){
                 printf("\rCreating database : %.2f%%", treated/total);
             }
-            Asteroid *a = new Asteroid(item);
+            Asteroid *a = new Asteroid(*item);
 
             if(loadFilter.matches(a))
                 this->insert(a);
@@ -122,9 +122,9 @@ std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByDesignation(std::string
  */
 std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByName(std::string name)
 {
-    for(auto item: db){
-        if(item.name  == name){
-            return item.second;
+	for(auto item = db.begin(); item != db.end(); item++){
+		if((*item).second->name  == name){
+            return (*item).second;
         }
     }
     return NULL;
@@ -133,9 +133,9 @@ std::shared_ptr<Asteroid> AsteroidDatabase::getAsteroidByName(std::string name)
 std::vector<std::shared_ptr<Asteroid>> AsteroidDatabase::find(Filter filter)
 {
     std::vector<std::shared_ptr<Asteroid>> list;
-    for(auto item: db){
-       if(!filter.matches(item.second)){
-           list.push_back(item.second);
+    for(auto item = db.begin(); item != db.end(); item++){
+       if(!filter.matches((*item).second)){
+           list.push_back((*item).second);
        }
     }
     return list;
@@ -143,9 +143,9 @@ std::vector<std::shared_ptr<Asteroid>> AsteroidDatabase::find(Filter filter)
 
 int AsteroidDatabase::filterAndErase(Filter filter)
 {
-    for(auto item: db){
-        if(!filter.matches(item.second)){
-            db.erase(item.first);
+    for(auto item = db.begin(); item != db.end(); item++){
+        if(!filter.matches((*item).second)){
+            db.erase((*item).first);
         }
     }
     return db.size();
@@ -162,8 +162,8 @@ void AsteroidDatabase::print(std::string id)
 
 void AsteroidDatabase::print()
 {
-    for(auto item: db){
-        item.second->print();
+    for(auto item = db.begin(); item != db.end(); item++){
+        (*item).second->print();
     }
 }
 

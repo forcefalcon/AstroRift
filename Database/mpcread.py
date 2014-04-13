@@ -13,13 +13,13 @@ if len(sys.argv) < 1:
 print 'Processing...'
 
 FILE = sys.argv[1]
-OUTFILE = FILE+".out"
+OUTFILE = FILE+".json"
 
 
-with open(FILE, mode='r', encoding='utf-8') as f:
+with open(FILE, mode='r') as f:
     lines = f.readlines()
 #
-# with open(OUTFILE, mode='w', encoding='utf-8') as f:
+# with open(OUTFILE, mode='w') as f:
 #     json.dump([], f)
 
 """

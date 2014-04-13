@@ -28,7 +28,7 @@ struct Filter {
 
     Filter(Filter::Type _type, Filter::Compare _cmp, char const * _y):type(_type), cmp(_cmp) {
         if(_type == Type::Name){
-            memcpy(value.name, _y, std::max((int)strlen(_y), 32));
+            memcpy(value.name, _y, (int)strlen(_y));
         }
     }
     Filter(Filter::Type _type, Filter::Compare _cmp, float _y):type(_type), cmp(_cmp) {

@@ -36,4 +36,8 @@ public:
     int yearOfDiscovery;
 };
 
+void initMeanOrbitalElementsPlanets( double d, int index, Asteroid & planet );
+void get_coord( Asteroid & elm, int p, double d, s_coordinates & coords );
+
+
 #endif // ASTEROID_H
