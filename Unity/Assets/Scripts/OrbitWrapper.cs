@@ -81,30 +81,43 @@ class OrbitWrapper {
 		}
 		return planets;
 	}
-	public static List<Vector3> GetPlanetsOrbit2 (int timeStamp) 
+	static List<Vector3> sPlanetPosition = null;
+	public static List<Vector3> GetPlanetsOrbit2 (int dayStamp) 
 	{
-		List<Vector3> coordinates = new List<Vector3>();
-		for (int i = 0; i < 8; i++) 
+		if (sPlanetPosition == null) 
 		{
-			Quaternion quaternion = Quaternion.identity;
-			quaternion = quaternion * Quaternion.AngleAxis (timeStamp, Vector3.up);
-			coordinates.Add (quaternion * Vector3.forward * GetDistanceKm (i));
+			sPlanetPosition = new List<Vector3>();
+			for (int i = 0; i < 8; i++)
+			{
+				sPlanetPosition.Add(
+					GetDisplacement(
+					(int)(Random.value * 3600),
+					new Vector3(0, GetBoxMuller(0, 0.025f), GetDistanceKm(i)))); 
+			}
+		}
+		List<Vector3> coordinates = new List<Vector3>();
+		for (int i = 0; i < sPlanetPosition.Count; i++) 
+		{
+			coordinates.Add (GetDisplacement(dayStamp, sPlanetPosition[i]));
 		}
 		return coordinates;
 	}
 	static List<Vector3> sInitialPosition = null;
+	static List<int> sInitialShift = null;
 	public static List<Vector3> GetAsteroidOrbit2 (int dayStamp) 
 	{
 		if (sInitialPosition == null) 
 		{
 			sInitialPosition = new List<Vector3>();
+			sInitialShift = new List<int>();
 			for (int i = 0; i < ASTEROID_COUNT; i++)
 			{
+
 				sInitialPosition.Add(
 					GetDisplacement(
 					(int)(Random.value * 3600),
 					new Vector3(0, 
-				            GetBoxMuller(1, 0.025f),
+				            GetBoxMuller(0, 3f)*0.05f,
 				            GetBoxMuller(503174332/ASTRONOMICAL_UNITS, 0.5f)))); 
 				            	//Random.value * 350475390/ASTRONOMICAL_UNITS + 327936637/ASTRONOMICAL_UNITS)));
 			}
@@ -121,7 +134,11 @@ class OrbitWrapper {
 	{
 		Quaternion quaternion = Quaternion.identity;
 		quaternion = quaternion * Quaternion.AngleAxis (day, Vector3.up);
-		return (quaternion * initialPosition);
+		//quaternion = quaternion * Quaternion.AngleAxis (day, Vector3.Cross(initialPosition, Vector3.up));
+		//Quaternion left = Quaternion.identity;
+		//left = left * Quaternion.AngleAxis (5, Vector3.left);
+		Vector3 temp = ((quaternion * initialPosition));
+		return temp;//Vector3.Cross(temp, Vector3.up);
 	}
 
 	static float GetBoxMuller(float mean, float stdDev)

@@ -37,11 +37,11 @@ __declspec(dllexport) int initializeDatabase(unsigned int timestamp) {
 	int result = -1;
 
 	if (dbIsNotInit) {
-		 Filter filter(Filter::Magnitude, Filter::LESSER, 10);
+		Filter filter(Filter::Magnitude, Filter::LESSER, 10);
 
 		//db.loadPolicy(filter);
 		db.loadFromJSON(jsonFilename);
-		db.filterAndErase(filter);
+		//db.filterAndErase(filter);
 		dbIsNotInit = 0;
 		result = db.size();
 	}
@@ -55,7 +55,7 @@ __declspec(dllexport) s_coordinates * getOrbits(unsigned int timestamp) {
 	double d = timestamp / 86400;
 	int j = 0;
 	for (auto i = db.begin(); i != db.end(); i++) {
-		get_coord(*(i->second.get()),0,d,planetsCoordinates[j]);
+		get_coord(*(i->second),0,d,asteroidsCoordinates[j]);
 		j++;
 	}
 
