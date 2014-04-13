@@ -69,6 +69,7 @@ public:
 
     void loadPolicy(Filter filter) { loadFilter = filter; }
     int loadFromFile(char const* filename);
+    int loadFromJSON(char const* filename);
 
 
     void insert(Asteroid *asteroid);

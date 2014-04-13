@@ -28,6 +28,9 @@ public:
     void computeDate(){
 //        1996 Oct. 1    = J96A1
 //        2001 Oct. 22   = K01AM
+        if(epoch.size() != 5)
+            return;
+
         int YY = atoi(epoch.substr(1, 2).c_str());
         if(YY > 20){
             yearOfDiscovery = 1900+YY;

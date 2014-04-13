@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "picojson.h"
+
 using std::shared_ptr;
 
 AsteroidDatabase::AsteroidDatabase()
@@ -43,6 +45,7 @@ int AsteroidDatabase::loadFromFile(const char *filename)
             >> a->ascendingNode >> a->inclination
             >> a->eccentricity >> a->meanDailyMotion
             >> a->semiMajorAxis >> dummy;
+        a->computeDate();
 
         if(loadFilter.matches(a))
             this->insert(a);
@@ -55,6 +58,23 @@ int AsteroidDatabase::loadFromFile(const char *filename)
     f.close();
 
     return db.size();
+}
+
+int AsteroidDatabase::loadFromJSON(const char *filename)
+{
+    std::ifstream f;
+    picojson::value values;
+    f.open(filename);
+    if(!f.is_open()){
+        std::cerr << "Could not open file: " << filename << std::endl;
+        return -1;
+    }
+
+    std::cout << "Parsing JSON file " << std::endl;
+    picojson::parse(values, f);
+    std::cout << "Done..." << std::endl;
+
+    f.close();
 }
 
 void AsteroidDatabase::insert(Asteroid *asteroid)
@@ -103,7 +123,6 @@ bool Filter::matches(const Asteroid *a)
     }
 
     if(type == Filter::YearOfDiscovery){
-        a->computeDate();
         switch (cmp) {
         case Filter::EQUAL:
             return a->yearOfDiscovery == value.year;
