@@ -93,7 +93,7 @@ class OrbitWrapper {
 		return coordinates;
 	}
 	static List<Vector3> sInitialPosition = null;
-	public static List<Vector3> GetAsteroidOrbit2 (int timeStamp) 
+	public static List<Vector3> GetAsteroidOrbit2 (int dayStamp) 
 	{
 		if (sInitialPosition == null) 
 		{
@@ -101,18 +101,37 @@ class OrbitWrapper {
 			for (int i = 0; i < ASTEROID_COUNT; i++)
 			{
 				sInitialPosition.Add(
-					new Vector3(0, 0, Random.value * 350475390/ASTRONOMICAL_UNITS + 327936637/ASTRONOMICAL_UNITS));
+					GetDisplacement(
+					(int)(Random.value * 3600),
+					new Vector3(0, 
+				            GetBoxMuller(1, 0.025f),
+				            GetBoxMuller(503174332/ASTRONOMICAL_UNITS, 0.5f)))); 
+				            	//Random.value * 350475390/ASTRONOMICAL_UNITS + 327936637/ASTRONOMICAL_UNITS)));
 			}
 		}
 
 		List<Vector3> coordinates = new List<Vector3>();
 		for (int i = 0; i < sInitialPosition.Count; i++) 
 		{
-			Quaternion quaternion = Quaternion.identity;
-			quaternion = quaternion * Quaternion.AngleAxis (timeStamp, Vector3.up);
-			coordinates.Add (quaternion * sInitialPosition[i]);
+			coordinates.Add (GetDisplacement(dayStamp, sInitialPosition[i]));
 		}
 		return coordinates;
+	}
+	private static Vector3 GetDisplacement(int day, Vector3 initialPosition)
+	{
+		Quaternion quaternion = Quaternion.identity;
+		quaternion = quaternion * Quaternion.AngleAxis (day, Vector3.up);
+		return (quaternion * initialPosition);
+	}
+
+	static float GetBoxMuller(float mean, float stdDev)
+	{
+		float u1 = Random.value; //these are uniform(0,1) random doubles
+		float u2 = Random.value;
+		double randStdNormal = Mathf.Sqrt((float)(-2.0 * Mathf.Log(u1))) *
+			Mathf.Sin((float)(2.0 * Mathf.PI * u2)); //random normal(0,1)
+		return (float)
+			(mean + stdDev * randStdNormal); //random normal(mean,stdDev^2)
 	}
 
 } 
