@@ -78,22 +78,22 @@ public class TimeManager : MonoBehaviour
 	
 	void PollInput()
 	{
-		if (Input.GetButtonDown("A Button"))
+		if (Input.GetButtonDown("StopTime"))
 		{
 			Stop();
 		}
 		
-		if (Input.GetButtonDown("B Button"))
+		if (Input.GetButtonDown("IncreaseTimeSpeed"))
 		{
 			IncreaseSpeed();
 		}
 		
-		if (Input.GetButtonDown("X Button"))
+		if (Input.GetButtonDown("DecreaseTimeSpeed"))
 		{
 			DecreaseSpeed();
 		}
 		
-		if (Input.GetButtonDown("Y Button"))
+		if (Input.GetButtonDown("ReverseTime"))
 		{
 			Reverse();
 		}
